@@ -1,0 +1,57 @@
+{
+  "nextId": 1005,
+  "solicitudes": [
+    {
+      "id": 1001,
+      "dni": "16414595-0",
+      "nombreCliente": "Carlos Mendoza",
+      "emailCliente": "carlos.mendoza@email.cl",
+      "origen": "Santiago, Chile",
+      "destino": "Madrid, España",
+      "tipoViaje": "negocios",
+      "fechaSalida": "2026-03-15T10:00",
+      "fechaRegreso": "2026-03-25T18:00",
+      "fechaRegistro": "2026-02-10T09:30:00",
+      "estado": "pendiente"
+    },
+    {
+      "id": 1002,
+      "dni": "18532467-3",
+      "nombreCliente": "María González",
+      "emailCliente": "maria.gonzalez@email.cl",
+      "origen": "Valparaíso, Chile",
+      "destino": "Cancún, México",
+      "tipoViaje": "turismo",
+      "fechaSalida": "2026-04-01T08:00",
+      "fechaRegreso": "2026-04-10T20:00",
+      "fechaRegistro": "2026-02-12T14:15:00",
+      "estado": "en proceso"
+    },
+    {
+      "id": 1003,
+      "dni": "12876543-K",
+      "nombreCliente": "Andrés Rojas",
+      "emailCliente": "andres.rojas@email.cl",
+      "origen": "Concepción, Chile",
+      "destino": "Buenos Aires, Argentina",
+      "tipoViaje": "otros",
+      "fechaSalida": "2026-02-20T06:00",
+      "fechaRegreso": "2026-02-28T22:00",
+      "fechaRegistro": "2026-01-28T11:00:00",
+      "estado": "finalizada"
+    },
+    {
+      "id": 1004,
+      "dni": "20123456-7",
+      "nombreCliente": "Sebastián Herrera",
+      "emailCliente": "sebastian.herrera@email.cl",
+      "origen": "Santiago, Chile",
+      "destino": "Tokio, Japón",
+      "tipoViaje": "negocios",
+      "fechaSalida": "2026-05-01T09:00",
+      "fechaRegreso": "2026-05-15T18:00",
+      "fechaRegistro": "2026-02-17T00:50:46.964Z",
+      "estado": "en proceso"
+    }
+  ]
+}

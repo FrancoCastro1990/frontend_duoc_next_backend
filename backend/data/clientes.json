@@ -1,0 +1,12 @@
+{
+  "clientes": [
+    { "dni": "16414595-0", "nombre": "Carlos Mendoza", "email": "carlos.mendoza@email.cl" },
+    { "dni": "18532467-3", "nombre": "María González", "email": "maria.gonzalez@email.cl" },
+    { "dni": "12876543-K", "nombre": "Andrés Rojas", "email": "andres.rojas@email.cl" },
+    { "dni": "19234567-8", "nombre": "Valentina Soto", "email": "valentina.soto@email.cl" },
+    { "dni": "15678234-1", "nombre": "Felipe Muñoz", "email": "felipe.munoz@email.cl" },
+    { "dni": "17345612-5", "nombre": "Camila Fernández", "email": "camila.fernandez@email.cl" },
+    { "dni": "20123456-7", "nombre": "Sebastián Herrera", "email": "sebastian.herrera@email.cl" },
+    { "dni": "14567890-2", "nombre": "Francisca López", "email": "francisca.lopez@email.cl" }
+  ]
+}
