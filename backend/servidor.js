@@ -29,6 +29,7 @@ function readClientes() {
 
 // Validacion de solicitud
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const RUT_REGEX = /^\d{1,2}\.?\d{3}\.?\d{3}-[\dkK]$/;
 const TIPOS_VIAJE = ['negocios', 'turismo', 'otros'];
 const ESTADOS = ['pendiente', 'en proceso', 'finalizada'];
 
@@ -51,8 +52,18 @@ function validateSolicitud(body) {
     }
   }
 
+  if (body.dni && !RUT_REGEX.test(body.dni.trim())) {
+    fields.dni = 'Formato de RUT inválido (ej: 12.345.678-9)';
+  }
+
   if (body.emailCliente && !EMAIL_REGEX.test(body.emailCliente.trim())) {
     fields.emailCliente = 'Formato de email inválido';
+  }
+
+  if (body.fechaSalida && body.fechaRegreso) {
+    if (new Date(body.fechaRegreso) <= new Date(body.fechaSalida)) {
+      fields.fechaRegreso = 'La fecha de regreso debe ser posterior a la de salida';
+    }
   }
 
   if (!body.tipoViaje || !TIPOS_VIAJE.includes(body.tipoViaje)) {
@@ -102,8 +113,8 @@ app.post('/api/solicitudes', (req, res) => {
       origen: req.body.origen.trim(),
       destino: req.body.destino.trim(),
       tipoViaje: req.body.tipoViaje,
-      fechaSalida: req.body.fechaSalida,
-      fechaRegreso: req.body.fechaRegreso,
+      fechaSalida: new Date(req.body.fechaSalida).toISOString(),
+      fechaRegreso: new Date(req.body.fechaRegreso).toISOString(),
       fechaRegistro: new Date().toISOString(),
       estado: req.body.estado,
     };
@@ -115,6 +126,31 @@ app.post('/api/solicitudes', (req, res) => {
     res.status(201).json(nuevaSolicitud);
   } catch (error) {
     console.error('Error al crear solicitud:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
+// DELETE /api/solicitudes/:id - Eliminar solicitud
+app.delete('/api/solicitudes/:id', (req, res) => {
+  try {
+    const id = parseInt(req.params.id, 10);
+    if (isNaN(id)) {
+      return res.status(400).json({ error: 'ID inválido' });
+    }
+
+    const data = readSolicitudes();
+    const index = data.solicitudes.findIndex(s => s.id === id);
+
+    if (index === -1) {
+      return res.status(404).json({ error: 'Solicitud no encontrada' });
+    }
+
+    data.solicitudes.splice(index, 1);
+    writeSolicitudes(data);
+
+    res.json({ message: 'Solicitud eliminada correctamente' });
+  } catch (error) {
+    console.error('Error al eliminar solicitud:', error);
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 });

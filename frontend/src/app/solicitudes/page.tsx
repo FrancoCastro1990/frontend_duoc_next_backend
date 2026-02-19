@@ -1,16 +1,17 @@
-import { Solicitud } from '@/types/solicitud.types';
-import SolicitudCard from '@/components/SolicitudCard';
-import FilterBar from '@/components/FilterBar';
+import dynamic from 'next/dynamic';
 import { Suspense } from 'react';
+import SolicitudesList from '@/components/SolicitudesList';
+import SolicitudesSkeleton from '@/components/SolicitudesSkeleton';
 
-async function fetchSolicitudes(estado?: string): Promise<Solicitud[]> {
-  const params = estado ? `?estado=${encodeURIComponent(estado)}` : '';
-  const res = await fetch(`http://localhost:3001/api/solicitudes${params}`, {
-    cache: 'no-store',
-  });
-  if (!res.ok) throw new Error('Error al obtener solicitudes');
-  return res.json();
-}
+const FilterBar = dynamic(() => import('@/components/FilterBar'), {
+  loading: () => (
+    <div className="flex gap-2">
+      {[1, 2, 3, 4].map((i) => (
+        <div key={i} className="h-10 w-24 bg-gray-200 rounded-md animate-pulse" />
+      ))}
+    </div>
+  ),
+});
 
 interface PageProps {
   searchParams: Promise<{ estado?: string }>;
@@ -18,7 +19,6 @@ interface PageProps {
 
 export default async function SolicitudesPage({ searchParams }: PageProps) {
   const { estado } = await searchParams;
-  const solicitudes = await fetchSolicitudes(estado);
   const serverTime = new Date().toLocaleString('es-CL', { timeZone: 'America/Santiago' });
 
   return (
@@ -31,27 +31,12 @@ export default async function SolicitudesPage({ searchParams }: PageProps) {
       </div>
 
       <div className="mb-6">
-        <Suspense fallback={null}>
-          <FilterBar />
-        </Suspense>
+        <FilterBar />
       </div>
 
-      {solicitudes.length === 0 ? (
-        <div className="text-center py-12 text-gray-500">
-          <p className="text-lg">No se encontraron solicitudes</p>
-          {estado && <p className="text-sm mt-1">Prueba quitando el filtro de estado</p>}
-        </div>
-      ) : (
-        <div className="grid gap-4">
-          {solicitudes.map((s) => (
-            <SolicitudCard key={s.id} solicitud={s} />
-          ))}
-        </div>
-      )}
-
-      <p className="text-xs text-gray-400 mt-8 text-center">
-        Total: {solicitudes.length} solicitud{solicitudes.length !== 1 ? 'es' : ''}
-      </p>
+      <Suspense fallback={<SolicitudesSkeleton />}>
+        <SolicitudesList estado={estado} />
+      </Suspense>
     </div>
   );
 }

@@ -4,7 +4,14 @@ import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { SolicitudFormData } from '@/types/solicitud.types';
-import ClienteSearch from './ClienteSearch';
+import dynamic from 'next/dynamic';
+
+const ClienteSearch = dynamic(() => import('./ClienteSearch'), {
+  ssr: false,
+  loading: () => (
+    <div className="h-10 w-full bg-gray-200 rounded-md animate-pulse" />
+  ),
+});
 
 export default function SolicitudForm() {
   const router = useRouter();
@@ -96,7 +103,13 @@ export default function SolicitudForm() {
         </label>
         <input
           type="text"
-          {...register('dni', { required: 'DNI es requerido' })}
+          {...register('dni', {
+            required: 'DNI es requerido',
+            pattern: {
+              value: /^\d{1,2}\.?\d{3}\.?\d{3}-[\dkK]$/,
+              message: 'Formato de RUT inválido (ej: 12.345.678-9)',
+            },
+          })}
           placeholder="Ej: 16414595-0"
           className={inputClass('dni')}
         />
@@ -206,7 +219,16 @@ export default function SolicitudForm() {
         </label>
         <input
           type="datetime-local"
-          {...register('fechaRegreso', { required: 'Fecha de regreso es requerida' })}
+          {...register('fechaRegreso', {
+            required: 'Fecha de regreso es requerida',
+            validate: (value) => {
+              const salida = watch('fechaSalida');
+              if (salida && value && new Date(value) <= new Date(salida)) {
+                return 'La fecha de regreso debe ser posterior a la de salida';
+              }
+              return true;
+            },
+          })}
           className={inputClass('fechaRegreso')}
         />
         {fieldError('fechaRegreso')}

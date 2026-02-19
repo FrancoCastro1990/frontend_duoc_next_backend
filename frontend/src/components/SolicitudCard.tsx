@@ -1,4 +1,5 @@
 import { Solicitud } from '@/types/solicitud.types';
+import DeleteButton from './DeleteButton';
 
 const estadoBadge: Record<string, string> = {
   pendiente: 'bg-yellow-100 text-yellow-800',
@@ -68,6 +69,10 @@ export default function SolicitudCard({ solicitud }: { solicitud: Solicitud }) {
       <p className="text-xs text-gray-400 mt-2">
         Registrado: {formatDate(solicitud.fechaRegistro)}
       </p>
+
+      <div className="mt-3 flex justify-end">
+        <DeleteButton solicitudId={solicitud.id} />
+      </div>
     </div>
   );
 }
