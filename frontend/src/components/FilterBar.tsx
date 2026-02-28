@@ -1,18 +1,20 @@
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
-
-const estados = [
-  { value: '', label: 'Todas' },
-  { value: 'pendiente', label: 'Pendiente' },
-  { value: 'en proceso', label: 'En Proceso' },
-  { value: 'finalizada', label: 'Finalizada' },
-];
+import { useTranslation } from 'react-i18next';
 
 export default function FilterBar() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const current = searchParams.get('estado') || '';
+  const { t } = useTranslation();
+
+  const estados = [
+    { value: '', label: t('filter.all') },
+    { value: 'pendiente', label: t('filter.pendiente') },
+    { value: 'en proceso', label: t('filter.enProceso') },
+    { value: 'finalizada', label: t('filter.finalizada') },
+  ];
 
   function handleFilter(estado: string) {
     if (estado) {

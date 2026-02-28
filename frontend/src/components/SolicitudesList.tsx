@@ -1,5 +1,7 @@
 import dynamic from 'next/dynamic';
 import { Solicitud } from '@/types/solicitud.types';
+import SolicitudesEmpty from './SolicitudesEmpty';
+import SolicitudesTotal from './SolicitudesTotal';
 
 const SolicitudCard = dynamic(() => import('./SolicitudCard'), {
   loading: () => (
@@ -32,12 +34,7 @@ export default async function SolicitudesList({ estado }: SolicitudesListProps) 
   const solicitudes = await fetchSolicitudes(estado);
 
   if (solicitudes.length === 0) {
-    return (
-      <div className="text-center py-12 text-gray-500">
-        <p className="text-lg">No se encontraron solicitudes</p>
-        {estado && <p className="text-sm mt-1">Prueba quitando el filtro de estado</p>}
-      </div>
-    );
+    return <SolicitudesEmpty hasFilter={!!estado} />;
   }
 
   return (
@@ -48,9 +45,7 @@ export default async function SolicitudesList({ estado }: SolicitudesListProps) 
         ))}
       </div>
 
-      <p className="text-xs text-gray-400 mt-8 text-center">
-        Total: {solicitudes.length} solicitud{solicitudes.length !== 1 ? 'es' : ''}
-      </p>
+      <SolicitudesTotal count={solicitudes.length} />
     </>
   );
 }

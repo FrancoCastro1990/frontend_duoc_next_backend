@@ -2,14 +2,16 @@
 
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export default function DeleteButton({ solicitudId }: { solicitudId: number }) {
   const router = useRouter();
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   async function handleDelete() {
-    if (!window.confirm(`¿Eliminar la solicitud #${solicitudId}?`)) return;
+    if (!window.confirm(t('delete.confirm', { id: solicitudId }))) return;
 
     setLoading(true);
     setError('');
@@ -21,13 +23,13 @@ export default function DeleteButton({ solicitudId }: { solicitudId: number }) {
 
       if (!res.ok) {
         const json = await res.json();
-        setError(json.error || 'Error al eliminar');
+        setError(json.error || t('delete.errorDelete'));
         return;
       }
 
       router.refresh();
     } catch {
-      setError('Error de conexión');
+      setError(t('delete.connectionError'));
     } finally {
       setLoading(false);
     }
@@ -40,7 +42,7 @@ export default function DeleteButton({ solicitudId }: { solicitudId: number }) {
         disabled={loading}
         className="px-3 py-1 text-sm text-red-600 border border-red-300 rounded-md hover:bg-red-50 transition-colors disabled:opacity-50"
       >
-        {loading ? 'Eliminando...' : 'Eliminar'}
+        {loading ? t('delete.deleting') : t('delete.delete')}
       </button>
       {error && <p className="text-red-600 text-xs mt-1">{error}</p>}
     </div>
