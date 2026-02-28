@@ -2,7 +2,8 @@
   "nav": {
     "brand": "Agencia de Viajes Oeste",
     "solicitudes": "Solicitudes",
-    "nuevaSolicitud": "Nueva Solicitud"
+    "nuevaSolicitud": "Nueva Solicitud",
+    "misSolicitudes": "Mis Solicitudes"
   },
   "solicitudes": {
     "title": "Solicitudes de Viaje",
@@ -83,6 +84,15 @@
   },
   "search": {
     "placeholder": "Buscar cliente..."
+  },
+  "client": {
+    "title": "Consultar Mis Solicitudes",
+    "dniLabel": "Ingrese su DNI",
+    "dniPlaceholder": "Ej: 16414595-0",
+    "search": "Buscar",
+    "noFound": "No se encontraron solicitudes para este DNI",
+    "noFoundHint": "Verifique que el DNI ingresado sea correcto",
+    "results": "Solicitudes encontradas: {{count}}"
   },
   "lang": {
     "switchTo": "EN"

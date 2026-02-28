@@ -2,7 +2,8 @@
   "nav": {
     "brand": "West Travel Agency",
     "solicitudes": "Requests",
-    "nuevaSolicitud": "New Request"
+    "nuevaSolicitud": "New Request",
+    "misSolicitudes": "My Requests"
   },
   "solicitudes": {
     "title": "Travel Requests",
@@ -83,6 +84,15 @@
   },
   "search": {
     "placeholder": "Search client..."
+  },
+  "client": {
+    "title": "Check My Requests",
+    "dniLabel": "Enter your ID",
+    "dniPlaceholder": "E.g.: 16414595-0",
+    "search": "Search",
+    "noFound": "No requests found for this ID",
+    "noFoundHint": "Verify the ID entered is correct",
+    "results": "Requests found: {{count}}"
   },
   "lang": {
     "switchTo": "ES"

@@ -77,15 +77,22 @@ function validateSolicitud(body) {
   return Object.keys(fields).length > 0 ? fields : null;
 }
 
-// GET /api/solicitudes - Listar solicitudes con filtro opcional por estado
+// GET /api/solicitudes - Listar solicitudes con filtro opcional por estado y/o DNI
 app.get('/api/solicitudes', (req, res) => {
   try {
     const data = readSolicitudes();
     let solicitudes = data.solicitudes;
 
-    const { estado } = req.query;
+    const { estado, dni } = req.query;
     if (estado && ESTADOS.includes(estado)) {
       solicitudes = solicitudes.filter(s => s.estado === estado);
+    }
+
+    if (dni) {
+      const normalizedDni = String(dni).replace(/\./g, '').toLowerCase();
+      solicitudes = solicitudes.filter(s =>
+        s.dni.replace(/\./g, '').toLowerCase() === normalizedDni
+      );
     }
 
     res.json(solicitudes);

@@ -1,9 +1,9 @@
 # Agencia de Viajes Oeste - Sistema de Solicitudes de Viaje
 
-Actividad formativa Semana 5/7 - Desarrollo Frontend III (DuocUC).
+Actividad formativa Semana 5/7/8 - Desarrollo Frontend III (DuocUC).
 Franco Castro Villanueva.
 
-Sistema de registro y listado de solicitudes de viaje con **Next.js (SSR)** para el frontend y **Node.js + Express** como backend separado, utilizando datos mock almacenados en archivos JSON.
+Sistema de registro y listado de solicitudes de viaje con **Next.js (SSR)** para el frontend y **Node.js + Express** como backend separado, utilizando datos mock almacenados en archivos JSON. Incluye vista de agente (CRUD completo) y vista de cliente (consulta por DNI, solo lectura).
 
 ## Tecnologias
 
@@ -74,7 +74,8 @@ Campos del formulario:
 
 ### Validacion
 
-- **Frontend:** react-hook-form con validacion de campos requeridos y formato de email
+- **Frontend (formulario nueva solicitud):** react-hook-form con validacion de campos requeridos, formato de email y formato de RUT
+- **Frontend (busqueda cliente):** react-hook-form con validacion de formato RUT chileno e i18n
 - **Backend:** validacion duplicada en Express; retorna errores por campo que se muestran en el formulario
 
 ### Busqueda de clientes
@@ -95,13 +96,25 @@ Campos del formulario:
 
 ### Lazy loading y Skeleton loaders
 
-- Componentes cargados de forma diferida con `next/dynamic`: FilterBar, SolicitudCard, SolicitudForm, ClienteSearch
+- Componentes cargados de forma diferida con `next/dynamic`: FilterBar, SolicitudCard, SolicitudForm, ClienteSearch, ClientSearchForm, ClientSolicitudCard
 - Skeleton loaders animados mientras los componentes cargan
-- `SolicitudesSkeleton` para el listado completo durante el fetch SSR (via `<Suspense>`)
+- `SolicitudesSkeleton` para el listado completo durante el fetch SSR (via `<Suspense>`) — usado tanto en vista agente como vista cliente
+
+### Vista de cliente - Consulta de solicitudes por DNI (Semana 8)
+
+- Pagina `/mis-solicitudes` donde el cliente puede consultar sus solicitudes ingresando su DNI
+- Formulario de busqueda con **react-hook-form**: validacion de formato RUT chileno (`/^\d{1,2}\.?\d{3}\.?\d{3}-[\dkK]$/`) con mensajes i18n
+- Al buscar, se navega a `/mis-solicitudes?dni=X` y el Server Component fetch las solicitudes filtradas desde el backend
+- Tarjetas de solicitud en **solo lectura** (sin boton Eliminar)
+- Maneja estado vacio con mensaje i18n ("No se encontraron solicitudes para este DNI")
+- Muestra contador de resultados ("Solicitudes encontradas: N")
+- `ClientSearchForm` cargado con `next/dynamic` + skeleton loader
+- `ClientSolicitudCard` cargado con `next/dynamic` + skeleton loader
+- Resultados envueltos en `<Suspense>` con `SolicitudesSkeleton` como fallback
 
 ### Eliminacion de solicitudes
 
-- Boton "Eliminar" en cada tarjeta de solicitud
+- Boton "Eliminar" en cada tarjeta de solicitud (solo en vista de agente)
 - Dialogo de confirmacion traducido segun idioma activo
 - Llama a `DELETE /api/solicitudes/:id` y refresca la lista
 
@@ -111,6 +124,7 @@ Campos del formulario:
 |--------|------|-------------|
 | GET | `/api/solicitudes` | Listar todas las solicitudes |
 | GET | `/api/solicitudes?estado=pendiente` | Filtrar por estado (`pendiente`, `en proceso`, `finalizada`) |
+| GET | `/api/solicitudes?dni=16414595-0` | Filtrar por DNI del cliente (case-insensitive, ignora puntos) |
 | POST | `/api/solicitudes` | Crear nueva solicitud (valida campos vacios y email) |
 | DELETE | `/api/solicitudes/:id` | Eliminar solicitud por ID |
 | GET | `/api/clientes` | Lista de clientes mock para autocompletado |
@@ -141,10 +155,13 @@ frontend_duoc_next_backend/
 │       │   ├── layout.tsx           # Layout global con I18nProvider
 │       │   ├── page.tsx             # Redirect a /solicitudes
 │       │   ├── globals.css          # Estilos globales + Tailwind
-│       │   └── solicitudes/
-│       │       ├── page.tsx         # Listado SSR con filtros (Server Component)
-│       │       └── nueva/
-│       │           └── page.tsx     # Formulario (Client, dynamic ssr:false)
+│       │   ├── solicitudes/
+│       │   │   ├── page.tsx         # Listado SSR con filtros (Server Component)
+│       │   │   └── nueva/
+│       │   │       └── page.tsx     # Formulario (Client, dynamic ssr:false)
+│       │   └── mis-solicitudes/
+│       │       ├── page.tsx         # Vista cliente SSR (Server Component + Suspense)
+│       │       └── ClientHeader.tsx # Titulo i18n de la vista cliente
 │       ├── components/
 │       │   ├── Navbar.tsx           # Barra de navegacion + LanguageSwitcher
 │       │   ├── I18nProvider.tsx     # Provider i18next ('use client')
@@ -159,7 +176,10 @@ frontend_duoc_next_backend/
 │       │   ├── FilterBar.tsx        # Filtro por estado ('use client')
 │       │   ├── SolicitudForm.tsx    # Formulario con react-hook-form + i18n
 │       │   ├── DeleteButton.tsx     # Boton eliminar con confirm i18n
-│       │   └── ClienteSearch.tsx    # Autocompletado de clientes ('use client')
+│       │   ├── ClienteSearch.tsx    # Autocompletado de clientes ('use client')
+│       │   ├── ClientSearchForm.tsx # Busqueda por DNI con RHF + validacion i18n
+│       │   ├── ClientSolicitudCard.tsx # Tarjeta solo lectura (sin eliminar)
+│       │   └── ClientSolicitudesList.tsx # Lista de resultados filtrados por DNI
 │       └── types/
 │           └── solicitud.types.ts   # Interfaces y tipos TypeScript
 └── README.md                        # Este archivo
@@ -184,3 +204,8 @@ frontend_duoc_next_backend/
 | `I18nProvider` | Client (`'use client'`) | Envuelve la app con `I18nextProvider` |
 | `HtmlLangSync` | Client (`'use client'`) | Sincroniza `<html lang>` |
 | `LanguageSwitcher` | Client (`'use client'`) | Toggle ES/EN |
+| `mis-solicitudes/page.tsx` | Server (async) | Fetch SSR por DNI con Suspense |
+| `ClientHeader` | Client (`'use client'`) | Titulo traducible vista cliente |
+| `ClientSearchForm` | Client (`'use client'`) | react-hook-form + validacion RUT i18n |
+| `ClientSolicitudCard` | Client (`'use client'`) | Tarjeta solo lectura con i18n |
+| `ClientSolicitudesList` | Client (`'use client'`) | Renderiza cards o estado vacio con i18n |
